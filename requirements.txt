@@ -1,0 +1,8 @@
+numpy>=1.24
+torch>=2.1
+transformers>=4.40
+datasets>=2.18
+openai>=1.30
+huggingface_hub>=0.23
+sentence-transformers>=2.6
+accelerate>=0.30
