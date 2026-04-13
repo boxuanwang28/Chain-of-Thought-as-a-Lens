@@ -67,6 +67,8 @@ python make_ref/make_ref.py \
 
 ### B. Run baselines / SC-Align methods
 
+The script supports both OpenAI API models and Hugging Face / local models. Change `--llm-provider openai` to `--llm-provider hf` to use opensource models.
+
 Baseline example:
 
 ```bash
@@ -136,23 +138,6 @@ python run_and_eval/run_scalign_multi_hop.py \
   --out-prefix results-gpt-4o-mini-scalign
 ```
 
-## Running with OpenAI API or Local Hugging Face Models
-
-The main script supports both OpenAI API models and local/open-source models through Hugging Face.
-
-### OpenAI API example
-
-```bash
-python run_and_eval/run_scalign_multi_hop.py \
-  --jsonl-all arcC_ref.jsonl \
-  --dataset arc_challenge \
-  --split test \
-  --llm-provider openai \
-  --llm-model gpt-4o-mini \
-  --openai-api-key YOUR_API_KEY \
-  --scot-k 5 \
-  --align-select \
-  --out-prefix results-gpt4omini-scalign
 
 ### C. Evaluate JSONL result files
 
