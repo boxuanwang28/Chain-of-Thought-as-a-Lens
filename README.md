@@ -23,9 +23,9 @@ Generates reference reasoning chains from Hugging Face datasets.
 - `make_ref.py`: build 1/2/3/4-hop reference chains for datasets such as ARC, SciQ, and CSQA.
 
 ### `run_and_eval/`
-Runs the baselines / SC-Align methods and evaluates their performance.
+Runs the baselines, SCOS (also referred to as ACSS in the paper), SC-CoT, and SC-Align methods, and evaluates their performance.
 
-- `run_scalign_multi_hop.py`: main experiment runner. Supports OpenAI API models and local Hugging Face models.
+- `run_scalign_multi_hop.py`: main experiment runner. Supports OpenAI API models and local Hugging Face models, including baseline, SCOS/ACSS, SC-CoT, and SC-Align settings.
 - `eval.py`: summarizes experiment results from generated JSONL files.
 
 ### `judge/`
@@ -92,6 +92,36 @@ python run_and_eval/run_scalign_multi_hop.py \
   --out-prefix results-gpt-4o-mini-sccot
 ```
 
+SCOS / ACSS examples:
+
+SCOS-RR (ACSS-RR in the paper):
+
+```bash
+python run_and_eval/run_scalign_multi_hop.py \
+  --jsonl-all arcC_ref.jsonl \
+  --dataset arc_challenge \
+  --split test \
+  --llm-provider openai \
+  --llm-model gpt-4o-mini \
+  --scos-mode rr \
+  --scos-k 5 \
+  --out-prefix results-gpt-4o-mini-scos-rr
+```
+
+SCOS-TS (ACSS-TS in the paper):
+
+```bash
+python run_and_eval/run_scalign_multi_hop.py \
+  --jsonl-all arcC_ref.jsonl \
+  --dataset arc_challenge \
+  --split test \
+  --llm-provider openai \
+  --llm-model gpt-4o-mini \
+  --scos-mode ts \
+  --scos-k 5 \
+  --out-prefix results-gpt-4o-mini-scos-ts
+```
+
 SC-Align example:
 
 ```bash
@@ -105,6 +135,24 @@ python run_and_eval/run_scalign_multi_hop.py \
   --align-select \
   --out-prefix results-gpt-4o-mini-scalign
 ```
+
+## Running with OpenAI API or Local Hugging Face Models
+
+The main script supports both OpenAI API models and local/open-source models through Hugging Face.
+
+### OpenAI API example
+
+```bash
+python run_and_eval/run_scalign_multi_hop.py \
+  --jsonl-all arcC_ref.jsonl \
+  --dataset arc_challenge \
+  --split test \
+  --llm-provider openai \
+  --llm-model gpt-4o-mini \
+  --openai-api-key YOUR_API_KEY \
+  --scot-k 5 \
+  --align-select \
+  --out-prefix results-gpt4omini-scalign
 
 ### C. Evaluate JSONL result files
 
@@ -129,8 +177,11 @@ python judge/llm_judge.py \
 python judge/parse_judge.py --judge-jsonl judge_results.jsonl
 ```
 
-## 4. Notes
+## 4. Method naming note
 
-- All Chinese comments/docstrings in the provided scripts were converted to English.
-- `judge/llm_judge.py` now reads the OpenAI key from `OPENAI_API_KEY` instead of a hard-coded value.
-- A small output-path print bug in `llm_judge.py` was also fixed.
+- In the code, `SCOS` refers to Semantic Consistency Optimization Sampling.
+- In the paper, the same family may be referred to as `ACSS`.
+- The two SCOS / ACSS variants included here are:
+  - `SCOS-RR` / `ACSS-RR`: selection based on the redundancy-rate style metric.
+  - `SCOS-TS` / `ACSS-TS`: selection based on the thematic-shift style metric.
+
